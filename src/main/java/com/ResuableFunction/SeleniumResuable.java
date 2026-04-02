@@ -1,3 +1,4 @@
+
 package com.ResuableFunction;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
+
+import io.cucumber.java.Scenario;
 
 public class SeleniumResuable {
 
@@ -82,8 +85,6 @@ public class SeleniumResuable {
         System.out.println("Value: " + text);
     }
 
-    // ✅ Fixed - added JavaScript scrollIntoView before hover
-    // and wrapped in try/catch to avoid JsonException crash
     public void mousehover(WebElement element) {
         try {
             JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -96,8 +97,6 @@ public class SeleniumResuable {
         }
     }
 
-    // ✅ Fixed - added null check and try/catch
-    // moveelement now creates its own Actions instance safely
     public void moveelement(WebElement element) {
         try {
             JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -110,7 +109,6 @@ public class SeleniumResuable {
         }
     }
 
-    // ✅ Fixed - now returns actual title instead of null
     public String gettitle() {
         try {
             String title = driver.getTitle();
@@ -133,7 +131,6 @@ public class SeleniumResuable {
         }
     }
 
-    // ✅ Fixed - skip parent window when switching to child
     public void windowhandling(WebElement element) {
         try {
             String parentWindow = driver.getWindowHandle();
@@ -144,7 +141,7 @@ public class SeleniumResuable {
             System.out.println("Total windows: " + allWindows.size());
 
             for (String childWindow : allWindows) {
-                if (!childWindow.equals(parentWindow)) {  // ✅ skip parent
+                if (!childWindow.equals(parentWindow)) {
                     driver.switchTo().window(childWindow);
                     System.out.println("Switched to child window: " + driver.getTitle());
                 }
@@ -152,5 +149,14 @@ public class SeleniumResuable {
         } catch (Exception e) {
             System.out.println("Window handling failed: " + e.getMessage());
         }
+    }
+
+    public void attachscreenshot(Scenario CucumberScenario) {
+        final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+        CucumberScenario.attach(screenshot, "image/png", "flipkartAutomation");
+    }
+    public void closeapp() {
+    	driver.close();
+System.out.println ("Browser closed");
     }
 }
